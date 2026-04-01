@@ -1,0 +1,22 @@
+node_modules
+dist
+.env
+.DS_Store
+*.log
+coverage
+.vscode
+.idea
+*.swp
+*.swo
+
+# Test artifacts
+test-results
+playwright-report
+playwright/.cache
+
+# Pact
+tests/contract/pacts
+tests/contract/logs
+
+# Build artifacts
+*.tgz
