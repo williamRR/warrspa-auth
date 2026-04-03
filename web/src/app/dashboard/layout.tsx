@@ -8,13 +8,13 @@ import { useEffect } from "react";
 
 const navItems = [
   {
-    href: "/WarrGate/dashboard/overview",
+    href: "/dashboard/overview",
     icon: LayoutDashboard,
     label: "Overview",
   },
-  { href: "/WarrGate/dashboard/api-keys", icon: Key, label: "API Keys" },
-  { href: "/WarrGate/dashboard/oauth", icon: Plug, label: "OAuth" },
-  { href: "/WarrGate/dashboard/settings", icon: Settings, label: "Settings" },
+  { href: "/dashboard/api-keys", icon: Key, label: "API Keys" },
+  { href: "/dashboard/oauth", icon: Plug, label: "OAuth" },
+  { href: "/dashboard/settings", icon: Settings, label: "Settings" },
 ];
 
 export default function DashboardLayout({
@@ -28,7 +28,7 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (!user) {
-      router.push("/WarrGate/");
+      router.push("/");
     }
   }, [user, router]);
 
@@ -38,7 +38,7 @@ export default function DashboardLayout({
 
   const handleLogout = () => {
     logout();
-    router.push("/WarrGate/");
+    router.push("/");
   };
 
   return (
