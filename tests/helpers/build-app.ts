@@ -1,9 +1,9 @@
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
-import jwt from '@fastify/jwt';
-import { config } from '../../src/config/env';
-import { authRoutes } from '../../src/routes/auth.routes';
-import { tenantMiddleware } from '../../src/middleware/tenant';
+import Fastify from "fastify";
+import cors from "@fastify/cors";
+import jwt from "@fastify/jwt";
+import { config } from "../../src/config/env";
+import { authRoutes } from "../../src/routes/auth.routes";
+import { tenantMiddleware } from "../../src/middleware/tenant";
 
 export async function buildApp() {
   const app = Fastify({
@@ -19,13 +19,13 @@ export async function buildApp() {
   });
 
   // Health check endpoint
-  app.get('/health', async (_request, _reply) => {
-    return { status: 'ok', timestamp: new Date().toISOString() };
+  app.get("/health", async (_request, _reply) => {
+    return { status: "ok", timestamp: new Date().toISOString() };
   });
 
   // Apply tenant middleware to all routes except health check
-  app.addHook('onRequest', async (request, reply) => {
-    if (request.url !== '/health') {
+  app.addHook("onRequest", async (request, reply) => {
+    if (request.url !== "/health") {
       return tenantMiddleware(request, reply);
     }
   });
@@ -34,9 +34,9 @@ export async function buildApp() {
   await app.register(authRoutes);
 
   // Test route for tenant middleware verification
-  app.get('/auth/test', async (request, _reply) => {
+  app.get("/auth/test", async (request, _reply) => {
     return {
-      message: 'Tenant middleware is working',
+      message: "Tenant middleware is working",
       tenantId: request.tenantId,
     };
   });

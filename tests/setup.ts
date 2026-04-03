@@ -1,4 +1,4 @@
-import { pool } from '../src/config/database';
+import { pool } from "../src/config/database";
 
 beforeAll(async () => {
   // Setup test database connection

@@ -1,44 +1,44 @@
-import { getApp } from '../helpers/test-app';
+import { getApp } from "../helpers/test-app";
 
-describe('Health Endpoint Integration Tests', () => {
-  it('should return health status without tenant header', async () => {
+describe("Health Endpoint Integration Tests", () => {
+  it("should return health status without tenant header", async () => {
     const app = await getApp();
 
     const response = await app.inject({
-      method: 'GET',
-      url: '/health',
+      method: "GET",
+      url: "/health",
     });
 
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({
-      status: 'ok',
+      status: "ok",
     });
-    expect(response.json()).toHaveProperty('timestamp');
+    expect(response.json()).toHaveProperty("timestamp");
   });
 
-  it('should return health status with tenant header', async () => {
+  it("should return health status with tenant header", async () => {
     const app = await getApp();
 
     const response = await app.inject({
-      method: 'GET',
-      url: '/health',
+      method: "GET",
+      url: "/health",
       headers: {
-        'X-Tenant-ID': 'test-tenant',
+        "X-Tenant-ID": "test-tenant",
       },
     });
 
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({
-      status: 'ok',
+      status: "ok",
     });
   });
 
-  it('should return valid timestamp', async () => {
+  it("should return valid timestamp", async () => {
     const app = await getApp();
 
     const response = await app.inject({
-      method: 'GET',
-      url: '/health',
+      method: "GET",
+      url: "/health",
     });
 
     const body = response.json();

@@ -1,7 +1,7 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import { JwtPayload } from '../types/auth';
+import { FastifyRequest, FastifyReply } from "fastify";
+import { JwtPayload } from "../types/auth";
 
-declare module 'fastify' {
+declare module "fastify" {
   interface FastifyRequest {
     jwtPayload?: JwtPayload;
   }
@@ -9,7 +9,7 @@ declare module 'fastify' {
 
 export async function authenticateToken(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     await request.jwtVerify();
@@ -17,8 +17,8 @@ export async function authenticateToken(
     request.jwtPayload = decoded;
   } catch (err) {
     return reply.status(401).send({
-      error: 'invalid_token',
-      message: 'Invalid or expired access token',
+      error: "invalid_token",
+      message: "Invalid or expired access token",
     });
   }
 }

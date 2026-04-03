@@ -4,8 +4,7 @@ import type { TenantOAuthConnection, Identity } from "../types/oauth";
 
 const ENCRYPTION_KEY =
   process.env.OAUTH_ENCRYPTION_KEY || "default-change-this-32ch";
-const CALLBACK_BASE =
-  process.env.OAUTH_CALLBACK_BASE || "http://localhost:3002";
+const CALLBACK_BASE = process.env.OAUTH_CALLBACK_BASE;
 
 const PROVIDER_PRESETS: Record<string, Partial<TenantOAuthConnection>> = {
   google: {

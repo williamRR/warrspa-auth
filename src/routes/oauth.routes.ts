@@ -122,7 +122,7 @@ export async function oauthRoutes(fastify: FastifyInstance) {
         [identity.tenant_id, user.id, refreshToken, expiresAt],
       );
 
-      const baseUrl = successRedirectUri || "http://localhost:3000/dashboard";
+      const baseUrl = successRedirectUri;
       const redirectUrl = new URL(baseUrl);
       redirectUrl.searchParams.set("access_token", accessToken);
       redirectUrl.searchParams.set("refresh_token", refreshToken);

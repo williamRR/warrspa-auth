@@ -1,5 +1,5 @@
-import { Pool, PoolConfig } from 'pg';
-import { config } from './env';
+import { Pool, PoolConfig } from "pg";
+import { config } from "./env";
 
 const poolConfig: PoolConfig = {
   connectionString: config.databaseUrl,
@@ -12,10 +12,10 @@ export async function query(text: string, params?: any[]) {
   try {
     const res = await pool.query(text, params);
     const duration = Date.now() - start;
-    console.log('Executed query', { text, duration, rows: res.rowCount });
+    console.log("Executed query", { text, duration, rows: res.rowCount });
     return res;
   } catch (error) {
-    console.error('Database query error', { text, error });
+    console.error("Database query error", { text, error });
     throw error;
   }
 }

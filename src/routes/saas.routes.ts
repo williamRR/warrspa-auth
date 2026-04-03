@@ -278,8 +278,7 @@ export async function saasRoutes(fastify: FastifyInstance) {
         { expiresIn: "10m" } as any,
       );
 
-      const callbackBase =
-        process.env.OAUTH_CALLBACK_BASE || "http://localhost:3002";
+      const callbackBase = process.env.OAUTH_CALLBACK_BASE;
       const redirectUri = `${callbackBase}/saas/oauth/callback`;
 
       const params = new URLSearchParams({
@@ -307,8 +306,7 @@ export async function saasRoutes(fastify: FastifyInstance) {
       error_description?: string;
     };
   }>("/saas/oauth/callback", async (request, reply) => {
-    const frontendRedirect =
-      process.env.OAUTH_SUCCESS_REDIRECT || "http://localhost:3000/dashboard";
+    const frontendRedirect = process.env.OAUTH_SUCCESS_REDIRECT;
     const { code, state, error } = request.query;
 
     if (error) {
@@ -324,8 +322,7 @@ export async function saasRoutes(fastify: FastifyInstance) {
 
       const clientId = process.env.GOOGLE_CLIENT_ID!;
       const clientSecret = process.env.GOOGLE_CLIENT_SECRET!;
-      const callbackBase =
-        process.env.OAUTH_CALLBACK_BASE || "http://localhost:3002";
+      const callbackBase = process.env.OAUTH_CALLBACK_BASE;
       const redirectUri = `${callbackBase}/saas/oauth/callback`;
 
       // Exchange code for tokens
@@ -370,6 +367,9 @@ export async function saasRoutes(fastify: FastifyInstance) {
 
       const authResult = await saasService.loginOrRegisterWithGoogle(email);
 
+      if (!frontendRedirect) {
+        throw new Error("OAUTH_SUCCESS_REDIRECT must be configured");
+      }
       const redirectUrl = new URL(frontendRedirect);
       redirectUrl.searchParams.set("access_token", authResult.access_token);
       redirectUrl.searchParams.set("refresh_token", authResult.refresh_token);

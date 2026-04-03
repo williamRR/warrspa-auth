@@ -1,8 +1,17 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { AuthService } from "../services/auth.service";
-import { RegisterRequest, LoginRequest, RefreshRequest, CreateApiKeyRequest } from "../types/auth";
+import {
+  RegisterRequest,
+  LoginRequest,
+  RefreshRequest,
+  CreateApiKeyRequest,
+} from "../types/auth";
 import { authenticateToken } from "../middleware/auth";
-import { generateApiKey, hashApiKey, getApiKeyPrefix } from "../middleware/apiKey";
+import {
+  generateApiKey,
+  hashApiKey,
+  getApiKeyPrefix,
+} from "../middleware/apiKey";
 import { query } from "../config/database";
 
 export async function authRoutes(fastify: FastifyInstance) {

@@ -1,19 +1,28 @@
-import bcrypt from 'bcrypt';
-import { FastifyInstance } from 'fastify';
-import { query } from '../config/database';
-import { User, RegisterRequest, LoginRequest, AuthResponse, JwtPayload } from '../types/auth';
+import bcrypt from "bcrypt";
+import { FastifyInstance } from "fastify";
+import { query } from "../config/database";
+import {
+  User,
+  RegisterRequest,
+  LoginRequest,
+  AuthResponse,
+  JwtPayload,
+} from "../types/auth";
 
 export class AuthService {
   constructor(private fastify: FastifyInstance) {}
 
-  async register(tenantId: string, data: RegisterRequest): Promise<AuthResponse> {
+  async register(
+    tenantId: string,
+    data: RegisterRequest,
+  ): Promise<AuthResponse> {
     const existingUser = await query(
-      'SELECT id FROM users WHERE tenant_id = $1 AND email = $2',
-      [tenantId, data.email]
+      "SELECT id FROM users WHERE tenant_id = $1 AND email = $2",
+      [tenantId, data.email],
     );
 
     if (existingUser.rows.length > 0) {
-      throw new Error('USER_ALREADY_EXISTS');
+      throw new Error("USER_ALREADY_EXISTS");
     }
 
     const password_hash = await bcrypt.hash(data.password, 10);
@@ -22,7 +31,7 @@ export class AuthService {
       `INSERT INTO users (tenant_id, email, password_hash, email_verified) 
        VALUES ($1, $2, $3, $4) 
        RETURNING id, email, email_verified, created_at, updated_at`,
-      [tenantId, data.email, password_hash, false]
+      [tenantId, data.email, password_hash, false],
     );
 
     const user = result.rows[0];
@@ -33,18 +42,18 @@ export class AuthService {
     const result = await query(
       `SELECT id, tenant_id, email, password_hash, email_verified 
        FROM users WHERE tenant_id = $1 AND email = $2`,
-      [tenantId, data.email]
+      [tenantId, data.email],
     );
 
     if (result.rows.length === 0) {
-      throw new Error('INVALID_CREDENTIALS');
+      throw new Error("INVALID_CREDENTIALS");
     }
 
     const user = result.rows[0];
     const isValid = await bcrypt.compare(data.password, user.password_hash);
 
     if (!isValid) {
-      throw new Error('INVALID_CREDENTIALS');
+      throw new Error("INVALID_CREDENTIALS");
     }
 
     return this.generateAuthResponse(user, tenantId);
@@ -56,23 +65,26 @@ export class AuthService {
        FROM sessions s
        JOIN users u ON u.id = s.user_id
        WHERE s.refresh_token = $1 AND s.revoked_at IS NULL`,
-      [refreshToken]
+      [refreshToken],
     );
 
     if (result.rows.length === 0) {
-      throw new Error('INVALID_REFRESH_TOKEN');
+      throw new Error("INVALID_REFRESH_TOKEN");
     }
 
     const session = result.rows[0];
 
     if (new Date(session.expires_at) < new Date()) {
-      await query('UPDATE sessions SET revoked_at = NOW() WHERE refresh_token = $1', [refreshToken]);
-      throw new Error('REFRESH_TOKEN_EXPIRED');
+      await query(
+        "UPDATE sessions SET revoked_at = NOW() WHERE refresh_token = $1",
+        [refreshToken],
+      );
+      throw new Error("REFRESH_TOKEN_EXPIRED");
     }
 
     await query(
-      'UPDATE sessions SET revoked_at = NOW() WHERE refresh_token = $1',
-      [refreshToken]
+      "UPDATE sessions SET revoked_at = NOW() WHERE refresh_token = $1",
+      [refreshToken],
     );
 
     return this.generateAuthResponse(session, session.tenant_id);
@@ -80,8 +92,8 @@ export class AuthService {
 
   async logout(refreshToken: string): Promise<void> {
     await query(
-      'UPDATE sessions SET revoked_at = NOW() WHERE refresh_token = $1',
-      [refreshToken]
+      "UPDATE sessions SET revoked_at = NOW() WHERE refresh_token = $1",
+      [refreshToken],
     );
   }
 
@@ -93,7 +105,7 @@ export class AuthService {
        LEFT JOIN identities i ON i.user_id = u.id
        LEFT JOIN tenant_oauth_connections c ON c.id = i.connection_id
        WHERE u.id = $1`,
-      [userId]
+      [userId],
     );
 
     if (result.rows.length === 0) return null;
@@ -106,10 +118,16 @@ export class AuthService {
       const mapping = row.claim_mapping;
 
       if (mapping.namePath) {
-        user_metadata.full_name = this.getNestedValue(profile, mapping.namePath);
+        user_metadata.full_name = this.getNestedValue(
+          profile,
+          mapping.namePath,
+        );
       }
       if (mapping.avatarPath) {
-        user_metadata.avatar_url = this.getNestedValue(profile, mapping.avatarPath);
+        user_metadata.avatar_url = this.getNestedValue(
+          profile,
+          mapping.avatarPath,
+        );
       }
     }
 
@@ -119,12 +137,12 @@ export class AuthService {
       email_verified: row.email_verified,
       tenant_id: row.tenant_id,
       created_at: row.created_at,
-      user_metadata
+      user_metadata,
     };
   }
 
   private getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((o, k) => (o || {})[k], obj);
+    return path.split(".").reduce((o, k) => (o || {})[k], obj);
   }
 
   private generateAuthResponse(user: any, tenantId: string): AuthResponse {
@@ -163,7 +181,7 @@ export class AuthService {
     query(
       `INSERT INTO sessions (tenant_id, user_id, refresh_token, expires_at)
        VALUES ($1, $2, $3, $4)`,
-      [tenantId, user.id, token, expiresAt]
+      [tenantId, user.id, token, expiresAt],
     );
 
     return token;
