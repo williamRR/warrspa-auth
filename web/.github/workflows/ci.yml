@@ -1,0 +1,24 @@
+# WarrGate CI Pipeline
+# Usa los reusable workflows desde williamRR/.github
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  # Llamada al CI centralizado
+  ci:
+    uses: williamRR/.github/.github/workflows/ci.yml@main
+    with:
+      node-version: '20'
+      run-e2e: true
+      sonar-project-key: 'warrgate-web'
+      deploy-target: 'none'  # Vercel maneja el deploy automáticamente
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
