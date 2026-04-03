@@ -87,7 +87,7 @@ const { key } = await keyRes.json();
               >
                 Pricing
               </Link>
-              <Link href="/dashboard">
+              <Link href="/auth/login">
                 <Button variant="ghost" size="sm">
                   Log in
                 </Button>
@@ -449,7 +449,7 @@ const { key } = await keyRes.json();
 
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <Link
-                href="/dashboard"
+                href="/auth/login"
                 className="hover:text-foreground transition-colors"
               >
                 Dashboard

@@ -37,7 +37,7 @@ export default function DocsPage() {
               </span>
             </Link>
             <div className="flex items-center gap-4">
-              <Link href="/dashboard">
+              <Link href="/auth/login">
                 <Button variant="ghost" size="sm">
                   Dashboard
                 </Button>

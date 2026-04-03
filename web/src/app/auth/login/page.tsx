@@ -18,11 +18,10 @@ import { Shield, ArrowLeft, Loader2 } from "lucide-react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [tenantKey, setTenantKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -32,8 +31,7 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      // El servicio SaaS crea el tenant automáticamente
-      const response = await fetch(`${API_URL}/saas/register`, {
+      const response = await fetch(`${API_URL}/saas/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +42,7 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || data.message || "Registration failed");
+        throw new Error(data.error || data.message || "Login failed");
       }
 
       // Store tokens
@@ -80,9 +78,9 @@ export default function RegisterPage() {
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Create your account</CardTitle>
+            <CardTitle className="text-2xl">Welcome back</CardTitle>
             <CardDescription>
-              Start managing authentication for your SaaS
+              Sign in to manage your authentication service
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -108,7 +106,6 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={6}
                 />
               </div>
 
@@ -122,10 +119,10 @@ export default function RegisterPage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating account...
+                    Signing in...
                   </>
                 ) : (
-                  "Create Account"
+                  "Sign In"
                 )}
               </Button>
 
@@ -172,10 +169,13 @@ export default function RegisterPage() {
 
             <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">
-                Already have an account?{" "}
+                Don't have an account?{" "}
               </span>
-              <Link href="/auth/login" className="text-primary hover:underline">
-                Log in
+              <Link
+                href="/auth/register"
+                className="text-primary hover:underline"
+              >
+                Sign up
               </Link>
             </div>
           </CardContent>
